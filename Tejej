@@ -1,0 +1,82 @@
+local UIS = game:GetService("UserInputService")
+local TS = game:GetService("TweenService")
+local p = game.Players.LocalPlayer
+local sg = Instance.new("ScreenGui", p.PlayerGui)
+sg.Name = "FexawV3_Final_Mega"
+sg.ResetOnSpawn = false
+
+local targetHeight, targetWidth = 380, 520
+
+-- Главное окно
+local main = Instance.new("Frame", sg)
+main.Size, main.Position = UDim2.new(0, 0, 0, 0), UDim2.new(0.5, 0, 0.5, 0)
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+main.Visible, main.ClipsDescendants = false, true 
+Instance.new("UICorner", main)
+
+local mainStroke = Instance.new("UIStroke", main)
+mainStroke.Thickness, mainStroke.ApplyStrokeMode = 3, Enum.ApplyStrokeMode.Border
+
+-- Боковая панель
+local side = Instance.new("Frame", main)
+side.Size, side.BackgroundColor3 = UDim2.new(0, 160, 1, 0), Color3.fromRGB(25, 25, 25)
+Instance.new("UICorner", side)
+local sideStroke = Instance.new("UIStroke", side)
+sideStroke.Thickness, sideStroke.ApplyStrokeMode = 2, Enum.ApplyStrokeMode.Border
+
+-- Верхняя панель (перетаскиваемая)
+local ob = Instance.new("Frame", sg)
+ob.Size, ob.Position = UDim2.new(0, 350, 0, 40), UDim2.new(0.5, -175, 0.2, 0)
+ob.BackgroundColor3, ob.BackgroundTransparency = Color3.fromRGB(15, 15, 15), 0.2
+Instance.new("UICorner", ob)
+local obStroke = Instance.new("UIStroke", ob)
+obStroke.Thickness, obStroke.ApplyStrokeMode = 2, Enum.ApplyStrokeMode.Border
+
+-- Радуга
+task.spawn(function()
+    local hue = 0
+    while true do
+        local color = Color3.fromHSV(hue, 1, 1)
+        mainStroke.Color, sideStroke.Color, obStroke.Color = color, color, color
+        hue = hue + 0.005 task.wait(0.01)
+    end
+end)
+
+-- Кнопки управления
+local dragBtn = Instance.new("TextButton", ob)
+dragBtn.Size, dragBtn.BackgroundTransparency, dragBtn.Text = UDim2.new(0, 60, 1, 0), 1, "÷  |"
+dragBtn.TextColor3, dragBtn.TextSize, dragBtn.Font = Color3.new(1, 1, 1), 22, Enum.Font.SourceSansBold
+
+local openBtn = Instance.new("TextButton", ob)
+openBtn.Size, openBtn.Position = UDim2.new(1, -65, 1, 0), UDim2.new(0, 65, 0, 0)
+openBtn.BackgroundTransparency, openBtn.Text = 1, "FEXAW | All Systems Online"
+openBtn.TextColor3, openBtn.TextXAlignment = Color3.new(1, 1, 1), Enum.TextXAlignment.Left
+
+-- Перетаскивание
+local dragging, dragStart, startPos, startPosMain
+dragBtn.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true dragStart = input.Position
+        startPos, startPosMain = ob.Position, main.Position
+        input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
+    end
+end)
+UIS.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        ob.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        main.Position = UDim2.new(startPosMain.X.Scale, startPosMain.X.Offset + delta.X, startPosMain.Y.Scale, startPosMain.Y.Offset + delta.Y)
+    end
+end)
+
+-- Переключатель видимости
+openBtn.MouseButton1Click:Connect(function()
+    if not main.Visible then
+        main.Visible = true
+        TS:Create(main, TweenInfo.new(0.5, Enum.EasingStyle.Back), {Size = UDim2.new(0, targetWidth, 0, targetHeight)}):Play()
+    else
+        local tw = TS:Create(main, TweenInfo.new(0.3), {Size = UDim2.new(0, 0, 0, 0)})
+        tw:Play() tw.Completed:Connect(function() if main.Size.Y.Offset < 10 then main.Visible = false end end)
+    end
+end)
