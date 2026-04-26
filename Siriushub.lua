@@ -2,100 +2,70 @@ FexawLib = {
     SaveData = {},
     States = {},
     Cooldowns = {},
-    Elements = {},
+    Elements = {Accents = {}, Backgrounds = {}, Texts = {}},
     Tabs = {},
     Themes = {
-        Neon = Color3.fromRGB(0, 255, 255),
-        Fire = Color3.fromRGB(255, 50, 0),
-        Water = Color3.fromRGB(0, 100, 255),
-        Toxic = Color3.fromRGB(170, 255, 0),
-        Matrix = Color3.fromRGB(0, 255, 70),
-        Lava = Color3.fromRGB(255, 0, 0),
-        Candy = Color3.fromRGB(255, 0, 200),
+        Neon = Color3.fromRGB(160, 100, 255),
+        Thunder = Color3.fromRGB(0, 200, 255),
+        Fire = Color3.fromRGB(255, 60, 60),
+        Emerald = Color3.fromRGB(0, 255, 120),
         Gold = Color3.fromRGB(255, 200, 0),
-        Space = Color3.fromRGB(100, 0, 255),
-        Midnight = Color3.fromRGB(25, 25, 50),
-        Sky = Color3.fromRGB(0, 170, 255),
-        Forest = Color3.fromRGB(30, 150, 30),
-        Sun = Color3.fromRGB(255, 255, 0),
-        Blood = Color3.fromRGB(150, 0, 0),
+        Ocean = Color3.fromRGB(0, 120, 255),
+        Lava = Color3.fromRGB(255, 100, 0),
         Mint = Color3.fromRGB(150, 255, 200),
-        Desert = Color3.fromRGB(230, 190, 130),
-        Ice = Color3.fromRGB(200, 240, 255),
-        Void = Color3.fromRGB(10, 10, 10),
-        Wine = Color3.fromRGB(120, 0, 40),
-        Sakura = Color3.fromRGB(255, 180, 200),
-        Lime = Color3.fromRGB(100, 255, 0),
-        Orange = Color3.fromRGB(255, 120, 0),
-        Purple = Color3.fromRGB(180, 0, 255),
-        Ocean = Color3.fromRGB(0, 80, 150),
-        Emerald = Color3.fromRGB(0, 200, 100),
+        Sakura = Color3.fromRGB(255, 150, 200),
+        Void = Color3.fromRGB(20, 20, 25),
+        White = Color3.fromRGB(255, 255, 255),
         Ruby = Color3.fromRGB(220, 20, 60),
-        Sapphire = Color3.fromRGB(15, 82, 186),
-        Bronze = Color3.fromRGB(205, 127, 50),
-        Silver = Color3.fromRGB(192, 192, 192),
+        Candy = Color3.fromRGB(255, 0, 150),
+        Forest = Color3.fromRGB(34, 139, 34),
+        Sky = Color3.fromRGB(135, 206, 235),
         Amethyst = Color3.fromRGB(153, 102, 204),
-        Turquoise = Color3.fromRGB(64, 224, 208),
-        Coral = Color3.fromRGB(255, 127, 80),
-        Lilac = Color3.fromRGB(200, 162, 200),
-        Olive = Color3.fromRGB(128, 128, 0),
-        Azure = Color3.fromRGB(0, 127, 255),
-        Rose = Color3.fromRGB(255, 0, 127),
-        Cyan = Color3.fromRGB(0, 255, 255),
-        Amber = Color3.fromRGB(255, 191, 0),
-        Peach = Color3.fromRGB(255, 218, 185),
-        Khaki = Color3.fromRGB(240, 230, 140),
-        Lavender = Color3.fromRGB(230, 230, 250),
-        Plum = Color3.fromRGB(221, 160, 221),
-        Ivory = Color3.fromRGB(255, 255, 240),
-        Beige = Color3.fromRGB(245, 245, 220),
-        Snow = Color3.fromRGB(255, 250, 250),
-        Slate = Color3.fromRGB(112, 128, 144),
-        Navy = Color3.fromRGB(0, 0, 128),
-        Teal = Color3.fromRGB(0, 128, 128),
-        Maroon = Color3.fromRGB(128, 0, 0)
+        Bronze = Color3.fromRGB(205, 127, 50),
+        Platinum = Color3.fromRGB(229, 228, 226)
     }
 }
 
-for i = 1, 101 do
-    FexawLib.Themes["Hue_Variant_" .. i] = Color3.fromHSV(i / 101, 0.65, 1)
+-- ГЕНЕРАТОР ТЕМ (ИТОГО 150+)
+for i = 1, 132 do
+    FexawLib.Themes["Official_Palette_" .. i] = Color3.fromHSV(i / 132, 0.7, 1)
 end
 
 function FexawLib:SaveConfig()
-    local HttpService = game:GetService("HttpService")
-    local success, json = pcall(function() return HttpService:JSONEncode(self.SaveData) end)
-    if success then writefile("FexawConfig.json", json) end
+    local success, json = pcall(function() return game:GetService("HttpService"):JSONEncode(self.SaveData) end)
+    if success then writefile("Fexaw_Config.json", json) end
 end
 
-function FexawLib:SetTheme(themeName)
-    local TweenService = game:GetService("TweenService")
+function FexawLib:SetTheme(n)
+    local TS = game:GetService("TweenService")
+    local c = self.Themes[n] or self.Themes.Neon
     if self.RainbowLoop then self.RainbowLoop:Disconnect() self.RainbowLoop = nil end
-    if themeName == "Rainbow" then
+    
+    if n == "Rainbow" then
         self.RainbowLoop = game:GetService("RunService").RenderStepped:Connect(function()
-            local color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
-            for _, stroke in pairs(self.Elements) do stroke.Color = color end
+            local clr = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+            for _, s in pairs(self.Elements.Accents) do if s.ClassName == "UIStroke" then s.Color = clr else s.BackgroundColor3 = clr end end
         end)
-    elseif self.Themes[themeName] then
-        local color = self.Themes[themeName]
-        for _, stroke in pairs(self.Elements) do
-            TweenService:Create(stroke, TweenInfo.new(0.6), {Color = color}):Play()
+    else
+        for _, s in pairs(self.Elements.Accents) do
+            if s.ClassName == "UIStroke" then TS:Create(s, TweenInfo.new(0.5), {Color = c}):Play() 
+            elseif s.ClassName == "TextLabel" or s.ClassName == "TextButton" then TS:Create(s, TweenInfo.new(0.5), {TextColor3 = c}):Play()
+            else TS:Create(s, TweenInfo.new(0.5), {BackgroundColor3 = c}):Play() end
         end
     end
 end
 
-local function handleToggleLogic(button, stateKey, callback)
-    local active = not FexawLib.States[stateKey]
-    FexawLib.States[stateKey] = active
-    FexawLib.SaveData[stateKey] = active
-    
-    game:GetService("TweenService"):Create(button, TweenInfo.new(0.3), {
-        BackgroundColor3 = active and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(40, 40, 40)
-    }):Play()
-    
-    if active then
+local function handleToggle(button, circle, stateKey, callback)
+    local state = not FexawLib.States[stateKey]
+    FexawLib.States[stateKey] = state
+    FexawLib.SaveData[stateKey] = state
+    local TS = game:GetService("TweenService")
+    TS:Create(circle, TweenInfo.new(0.3), {Position = state and UDim2.new(1, -18, 0.5, -7) or UDim2.new(0, 4, 0.5, -7), BackgroundColor3 = state and Color3.new(1,1,1) or Color3.fromRGB(150,150,150)}):Play()
+    TS:Create(button, TweenInfo.new(0.3), {BackgroundColor3 = state and Color3.fromRGB(100, 50, 255) or Color3.fromRGB(50, 50, 60)}):Play()
+    if state then
         task.spawn(function()
             while FexawLib.States[stateKey] do
-                if not FexawLib.Cooldowns[stateKey] or (tick() - FexawLib.Cooldowns[stateKey]) > 0.45 then
+                if not FexawLib.Cooldowns[stateKey] or (tick() - FexawLib.Cooldowns[stateKey]) > 0.5 then
                     FexawLib.Cooldowns[stateKey] = tick()
                     pcall(callback)
                 end
@@ -108,362 +78,183 @@ end
 function FexawLib:Init()
     local UIS = game:GetService("UserInputService")
     local TS = game:GetService("TweenService")
-    local p = game:GetService("Players").LocalPlayer
+    local p = game.Players.LocalPlayer
     local sg = Instance.new("ScreenGui", p:WaitForChild("PlayerGui"))
-    sg.Name = "Fexaw_Mobile_Ultimate"
+    sg.Name = "Fexaw_Official_V10"
     sg.ResetOnSpawn = false
-    sg.DisplayOrder = 9999
 
-    local BackOverlay = Instance.new("TextButton")
-    BackOverlay.Parent = sg
-    BackOverlay.Size = UDim2.new(1, 0, 1, 0)
-    BackOverlay.BackgroundTransparency = 1
-    BackOverlay.Text = ""
-    BackOverlay.Visible = false
-    BackOverlay.ZIndex = 1
+    local main = Instance.new("Frame", sg)
+    main.Size, main.Position = UDim2.new(0, 620, 0, 420), UDim2.new(0.5, -310, 0.5, -210)
+    main.BackgroundColor3, main.ClipsDescendants = Color3.fromRGB(12, 12, 18), true
+    Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
+    local ms = Instance.new("UIStroke", main) ms.Thickness = 2 table.insert(self.Elements.Accents, ms)
 
-    local main = Instance.new("Frame")
-    main.Parent = sg
-    main.Name = "CenterBar"
-    main.Size = UDim2.new(0, 125, 1, 0)
-    main.Position = UDim2.new(0.5, -62, 0, 0)
-    main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-    main.Visible = false
-    main.ClipsDescendants = true
-    main.ZIndex = 5
-    
-    local ms = Instance.new("UIStroke", main)
-    ms.Thickness = 4
-    ms.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    table.insert(self.Elements, ms)
+    -- SIDEBAR
+    local side = Instance.new("Frame", main)
+    side.Size, side.BackgroundColor3 = UDim2.new(0, 180, 1, 0), Color3.fromRGB(18, 18, 26)
+    Instance.new("UICorner", side).CornerRadius = UDim.new(0, 12)
 
-    local TopHeader = Instance.new("Frame", main)
-    TopHeader.Size = UDim2.new(1, 0, 0, 120)
-    TopHeader.BackgroundTransparency = 1
+    local logo = Instance.new("TextLabel", side)
+    logo.Size, logo.Position = UDim2.new(1, 0, 0, 60), UDim2.new(0, 20, 0, 0)
+    logo.Text, logo.TextColor3, logo.TextXAlignment = "FEXAW HUB", Color3.new(1,1,1), Enum.TextXAlignment.Left
+    logo.Font, logo.TextSize, logo.BackgroundTransparency = Enum.Font.SourceSansBold, 22, 1
+    table.insert(self.Elements.Accents, logo)
 
-    local CloseBtn = Instance.new("TextButton", TopHeader)
-    CloseBtn.Size = UDim2.new(1, 0, 0, 35)
-    CloseBtn.Position = UDim2.new(0, 0, 0, 5)
-    CloseBtn.Text = "[ CLOSE X ]"
-    CloseBtn.TextColor3 = Color3.fromRGB(255, 60, 60)
-    CloseBtn.BackgroundTransparency = 1
-    CloseBtn.Font = Enum.Font.SourceSansBold
+    local tabScroll = Instance.new("ScrollingFrame", side)
+    tabScroll.Size, tabScroll.Position = UDim2.new(1, 0, 1, -80), UDim2.new(0, 0, 0, 70)
+    tabScroll.BackgroundTransparency, tabScroll.ScrollBarThickness = 1, 0
+    local tabLayout = Instance.new("UIListLayout", tabScroll)
+    tabLayout.Padding, tabLayout.HorizontalAlignment = UDim.new(0, 5), Enum.HorizontalAlignment.Center
 
-    local SearchBtn = Instance.new("TextButton", TopHeader)
-    SearchBtn.Size = UDim2.new(1, 0, 0, 35)
-    SearchBtn.Position = UDim2.new(0, 0, 0, 40)
-    SearchBtn.Text = "SEARCH 🔍"
-    SearchBtn.TextColor3 = Color3.new(1, 1, 1)
-    SearchBtn.BackgroundTransparency = 1
-    SearchBtn.Font = Enum.Font.SourceSansBold
+    -- TOPBAR
+    local top = Instance.new("Frame", main)
+    top.Size, top.Position, top.BackgroundTransparency = UDim2.new(1, -180, 0, 50), UDim2.new(0, 180, 0, 0), 1
+    local topInfo = Instance.new("TextLabel", top)
+    topInfo.Size, topInfo.Position = UDim2.new(1, -150, 1, 0), UDim2.new(0, 20, 0, 0)
+    topInfo.Text, topInfo.TextColor3, topInfo.TextXAlignment = "Premium Edition | ThunderZ", Color3.fromRGB(150, 150, 160), Enum.TextXAlignment.Left
+    topInfo.BackgroundTransparency, topInfo.Font = 1, Enum.Font.SourceSans
 
-    local SearchFrame = Instance.new("Frame", main)
-    SearchFrame.Size = UDim2.new(1, -10, 0, 30)
-    SearchFrame.Position = UDim2.new(0, 5, 0, 80)
-    SearchFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    SearchFrame.Visible = false
-    Instance.new("UICorner", SearchFrame)
-    
-    local SearchInput = Instance.new("TextBox", SearchFrame)
-    SearchInput.Size = UDim2.new(1, -10, 1, 0)
-    SearchInput.Position = UDim2.new(0, 5, 0, 0)
-    SearchInput.BackgroundTransparency = 1
-    SearchInput.PlaceholderText = "..."
-    SearchInput.TextColor3 = Color3.new(1, 1, 1)
-
-    local ob = Instance.new("Frame", sg)
-    ob.Name = "ToggleIcon"
-    ob.Size = UDim2.new(0, 320, 0, 40)
-    ob.Position = UDim2.new(0.5, -160, 0.015, 0)
-    ob.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-    ob.BackgroundTransparency = 0.2
-    ob.ZIndex = 10000
-    Instance.new("UICorner", ob)
-    
-    local os = Instance.new("UIStroke", ob)
-    os.Thickness = 2
-    table.insert(self.Elements, os)
-    
-    local db = Instance.new("TextButton", ob)
-    db.Size = UDim2.new(0, 55, 1, 0)
-    db.BackgroundTransparency = 1
-    db.Text = "÷"
-    db.TextColor3 = Color3.new(1, 1, 1)
-    db.TextSize = 25
-
-    local obn = Instance.new("TextButton", ob)
-    obn.Size = UDim2.new(1, -60, 1, 0)
-    obn.Position = UDim2.new(0, 60, 0, 0)
-    obn.BackgroundTransparency = 1
-    obn.Text = "FEXAW MOBILE HUB"
-    obn.TextColor3 = Color3.new(1, 1, 1)
-    obn.TextXAlignment = Enum.TextXAlignment.Left
-
-    local dragging, dragStart, startPos, mStartPos
-    db.InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
-            dragging = true dragStart = i.Position startPos = ob.Position mStartPos = main.Position
-            i.Changed:Connect(function() if i.UserInputState == Enum.UserInputState.End then dragging = false end end)
-        end
-    end)
-    UIS.InputChanged:Connect(function(i)
-        if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
-            local delta = i.Position - dragStart
-            ob.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
-
-    local function toggleMenu(state)
-        if state then
-            main.Visible = true
-            BackOverlay.Visible = true
-            main.Position = UDim2.new(0.5, -62, 1, 0)
-            TS:Create(main, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Position = UDim2.new(0.5, -62, 0, 0)}):Play()
-        else
-            local tw = TS:Create(main, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Position = UDim2.new(0.5, -62, 1, 0)})
-            tw:Play()
-            tw.Completed:Connect(function() main.Visible = false BackOverlay.Visible = false end)
-        end
+    local ctrl = Instance.new("Frame", top)
+    ctrl.Size, ctrl.Position, ctrl.BackgroundTransparency = UDim2.new(0, 120, 1, 0), UDim2.new(1, -130, 0, 0), 1
+    local function addCtrl(txt, pos, clr)
+        local b = Instance.new("TextButton", ctrl)
+        b.Size, b.Position, b.Text, b.TextColor3 = UDim2.new(0, 30, 0, 30), pos, txt, clr
+        b.BackgroundTransparency, b.TextSize = 1, 18 return b
     end
+    local X = addCtrl("X", UDim2.new(1, -35, 0, 10), Color3.new(1,0.2,0.2))
+    local M = addCtrl("-", UDim2.new(1, -75, 0, 10), Color3.new(1,1,1))
 
-    obn.MouseButton1Click:Connect(function() toggleMenu(true) end)
-    BackOverlay.MouseButton1Click:Connect(function() toggleMenu(false) end)
-    CloseBtn.MouseButton1Click:Connect(function() toggleMenu(false) end)
-    SearchBtn.MouseButton1Click:Connect(function() SearchFrame.Visible = not SearchFrame.Visible end)
+    -- TOGGLE BUTTON
+    local tgl = Instance.new("Frame", sg)
+    tgl.Size, tgl.Position, tgl.BackgroundColor3 = UDim2.new(0, 60, 0, 60), UDim2.new(0.02, 0, 0.5, -30), Color3.fromRGB(20, 20, 30)
+    Instance.new("UICorner", tgl, UDim.new(1, 0))
+    local tglS = Instance.new("UIStroke", tgl) tglS.Thickness = 2 table.insert(self.Elements.Accents, tglS)
+    local tglB = Instance.new("TextButton", tgl)
+    tglB.Size, tglB.Text, tglB.TextColor3, tglB.BackgroundTransparency = UDim2.new(1,0,1,0), "FX", Color3.new(1,1,1), 1
+    tglB.MouseButton1Click:Connect(function() main.Visible = not main.Visible end)
 
-    SearchInput:GetPropertyChangedSignal("Text"):Connect(function()
-        local t = SearchInput.Text:lower()
-        for _, tab in pairs(self.Tabs) do
-            for _, item in pairs(tab.Cont:GetDescendants()) do
-                if item:IsA("TextButton") and item.Parent:IsA("Frame") then
-                    item.Parent.Visible = (t == "" or item.Text:lower():find(t))
-                end
-            end
-        end
-    end)
+    X.MouseButton1Click:Connect(function() sg:Destroy() end)
+    M.MouseButton1Click:Connect(function() main.Visible = false end)
 
-    self.mainFrame = main
-    self.tabButtonsFrame = Instance.new("Frame", main)
-    self.tabButtonsFrame.Size = UDim2.new(1, 0, 0, 45)
-    self.tabButtonsFrame.Position = UDim2.new(0, 0, 0, 120)
-    self.tabButtonsFrame.BackgroundTransparency = 1
-    local tbl = Instance.new("UIListLayout", self.tabButtonsFrame)
-    tbl.FillDirection = Enum.FillDirection.Horizontal
-    tbl.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    -- DRAG
+    local drag, dS, sP
+    main.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag, dS, sP = true, i.Position, main.Position end end)
+    UIS.InputChanged:Connect(function(i) if drag and i.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = i.Position - dS
+        main.Position = UDim2.new(sP.X.Scale, sP.X.Offset + delta.X, sP.Y.Scale, sP.Y.Offset + delta.Y)
+    end end)
+    UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
 
-    self.Tabs = {}
+    self.mainFrame, self.tabScroll, self.Tabs = main, tabScroll, {}
 
-    -- АВТОМАТИЧЕСКАЯ ВКЛАДКА НАСТРОЕК
-    local SettingsTab = self:CreateTab("S") 
-    SettingsTab:AddButton("SAVE CONFIG", function() self:SaveConfig() end)
-    local ThemeCat = SettingsTab:CreateCategory("THEMES")
-    ThemeCat:AddButton("Rainbow", function() self:SetTheme("Rainbow") end)
-    
-    local sortedThemes = {}
-    for name in pairs(self.Themes) do table.insert(sortedThemes, name) end
-    table.sort(sortedThemes)
-    for _, themeName in ipairs(sortedThemes) do
-        ThemeCat:AddButton(themeName, function() self:SetTheme(themeName) end)
-    end
+    -- АВТО-ВКЛАДКА SETTINGS
+    local SetTab = self:CreateTab("Settings")
+    SetTab:AddButton("Save Configuration", "Save all current states to file", function() self:SaveConfig() end)
+    local ThCat = SetTab:CreateCategory("Theme Engine")
+    ThCat:AddButton("Rainbow Dynamic", "Cycle through all colors", function() self:SetTheme("Rainbow") end)
+    local sorted = {} for n in pairs(self.Themes) do table.insert(sorted, n) end table.sort(sorted)
+    for _, n in ipairs(sorted) do ThCat:AddButton(n, "Switch to " .. n .. " style", function() self:SetTheme(n) end) end
 
     self:SetTheme("Neon")
     return self
 end
 
 function FexawLib:CreateTab(name)
-    local TabBtn = Instance.new("TextButton", self.tabButtonsFrame)
-    TabBtn.Size = UDim2.new(0, 35, 0, 35)
-    TabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    TabBtn.Text = name:sub(1,1):upper()
-    TabBtn.TextColor3 = Color3.new(1, 1, 1)
-    Instance.new("UICorner", TabBtn)
-    local btnStroke = Instance.new("UIStroke", TabBtn)
-    btnStroke.Thickness = 2
-    table.insert(self.Elements, btnStroke)
+    local btn = Instance.new("TextButton", self.tabScroll)
+    btn.Size, btn.BackgroundColor3 = UDim2.new(0.9, 0, 0, 38), Color3.fromRGB(25, 25, 35)
+    btn.Text, btn.TextColor3 = "    " .. name, Color3.fromRGB(180, 180, 190)
+    btn.TextXAlignment, btn.Font = Enum.TextXAlignment.Left, Enum.Font.SourceSansBold
+    Instance.new("UICorner", btn)
+    local bs = Instance.new("UIStroke", btn) bs.Thickness, bs.Transparency = 1, 0.8 table.insert(FexawLib.Elements.Accents, bs)
 
-    local Content = Instance.new("ScrollingFrame", self.mainFrame)
-    Content.Position = UDim2.new(0, 5, 0, 175)
-    Content.Size = UDim2.new(1, -10, 1, -185)
-    Content.BackgroundTransparency = 1
-    Content.Visible = false
-    Content.ScrollBarThickness = 0
-    Content.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    Instance.new("UIListLayout", Content).Padding = UDim.new(0, 6)
+    local content = Instance.new("ScrollingFrame", self.mainFrame)
+    content.Position, content.Size = UDim2.new(0, 195, 0, 60), UDim2.new(1, -210, 1, -75)
+    content.BackgroundTransparency, content.Visible, content.ScrollBarThickness = 1, false, 0
+    content.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    Instance.new("UIListLayout", content).Padding = UDim.new(0, 10)
 
-    table.insert(self.Tabs, {Btn = TabBtn, Cont = Content})
-    
-    TabBtn.MouseButton1Click:Connect(function()
-        for _, t in pairs(self.Tabs) do 
-            t.Cont.Visible = false 
-            t.Btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        end
-        Content.Visible = true
-        TabBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    table.insert(self.Tabs, {Btn = btn, Cont = content})
+    btn.MouseButton1Click:Connect(function()
+        for _, t in pairs(self.Tabs) do t.Cont.Visible, t.Btn.TextColor3 = false, Color3.fromRGB(180,180,190) end
+        content.Visible, btn.TextColor3 = true, Color3.new(1,1,1)
     end)
 
     local tabObj = {}
 
-    function tabObj:AddToggle(text, callback)
-        local frame = Instance.new("Frame", Content)
-        frame.Size = UDim2.new(1, 0, 0, 55)
-        frame.BackgroundTransparency = 1
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(1, 0, 1, 0)
-        btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        btn.Text = text
-        btn.TextColor3 = Color3.new(1, 1, 1)
-        btn.TextWrapped = true
-        Instance.new("UICorner", btn)
-        local s = Instance.new("UIStroke", btn)
-        s.Thickness = 2 table.insert(self.Elements, s)
+    function tabObj:AddToggle(title, desc, callback)
+        local f = Instance.new("Frame", content)
+        f.Size, f.BackgroundColor3 = UDim2.new(1, 0, 0, 60), Color3.fromRGB(22, 22, 30)
+        Instance.new("UICorner", f)
+        local t = Instance.new("TextLabel", f)
+        t.Size, t.Position, t.Text = UDim2.new(1, -70, 0, 30), UDim2.new(0, 15, 0, 5), title
+        t.TextColor3, t.Font, t.TextXAlignment, t.BackgroundTransparency = Color3.new(1,1,1), Enum.Font.SourceSansBold, Enum.TextXAlignment.Left, 1
+        local d = Instance.new("TextLabel", f)
+        d.Size, d.Position, d.Text = UDim2.new(1, -70, 0, 20), UDim2.new(0, 15, 0, 30), desc
+        d.TextColor3, d.TextSize, d.TextXAlignment, d.BackgroundTransparency = Color3.fromRGB(150,150,160), 13, Enum.TextXAlignment.Left, 1
+        local btn = Instance.new("TextButton", f)
+        btn.Size, btn.Position = UDim2.new(0, 45, 0, 22), UDim2.new(1, -60, 0.5, -11)
+        btn.BackgroundColor3, btn.Text = Color3.fromRGB(50,50,60), "" Instance.new("UICorner", btn, UDim.new(1,0))
+        local circ = Instance.new("Frame", btn)
+        circ.Size, circ.Position, circ.BackgroundColor3 = UDim2.new(0, 14, 0, 14), UDim2.new(0, 4, 0.5, -7), Color3.fromRGB(150,150,150)
+        Instance.new("UICorner", circ, UDim.new(1,0))
+        btn.MouseButton1Click:Connect(function() handleToggle(btn, circ, name.."_"..title, callback) end)
+    end
+
+    function tabObj:AddDropdown(title, options, callback)
+        local f = Instance.new("Frame", content)
+        f.Size, f.BackgroundColor3, f.ClipsDescendants = UDim2.new(1, 0, 0, 45), Color3.fromRGB(22, 22, 30), true
+        Instance.new("UICorner", f)
+        local btn = Instance.new("TextButton", f)
+        btn.Size, btn.Text, btn.TextColor3, btn.BackgroundTransparency = UDim2.new(1,0,0,45), "  " .. title .. "  [ - ]", Color3.new(1,1,1), 1
+        btn.TextXAlignment, btn.Font = Enum.TextXAlignment.Left, Enum.Font.SourceSansBold
         
+        local listFrame = Instance.new("Frame", f)
+        listFrame.Size, listFrame.Position, listFrame.BackgroundTransparency = UDim2.new(1,0,0,250), UDim2.new(0,0,0,45), 1
+        local search = Instance.new("TextBox", listFrame)
+        search.Size, search.Position, search.BackgroundColor3 = UDim2.new(1,-20,0,30), UDim2.new(0,10,0,5), Color3.fromRGB(30,30,40)
+        search.PlaceholderText, search.Text, search.TextColor3 = "Search...", "", Color3.new(1,1,1) Instance.new("UICorner", search)
+        
+        local sc = Instance.new("ScrollingFrame", listFrame)
+        sc.Size, sc.Position, sc.BackgroundTransparency, sc.ScrollBarThickness = UDim2.new(1,0,1,-40), UDim2.new(0,0,0,40), 1, 0
+        Instance.new("UIListLayout", sc)
+
+        local function update(filter)
+            for _, o in pairs(sc:GetChildren()) do if o:IsA("TextButton") then o:Destroy() end end
+            for _, v in pairs(options) do
+                if filter == "" or v:lower():find(filter:lower()) then
+                    local ib = Instance.new("TextButton", sc)
+                    ib.Size, ib.BackgroundColor3, ib.Text = UDim2.new(1, -10, 0, 30), Color3.fromRGB(30,30,45), v
+                    ib.TextColor3 = Color3.fromRGB(200,200,210) Instance.new("UICorner", ib)
+                    ib.MouseButton1Click:Connect(function()
+                        btn.Text = "  " .. title .. "  [" .. v .. "]"
+                        f.Size = UDim2.new(1,0,0,45) pcall(callback, v)
+                    end)
+                end
+            end
+        end
         btn.MouseButton1Click:Connect(function()
-            handleToggleLogic(btn, name .. "_" .. text, callback)
+            f.Size = f.Size.Y.Offset == 45 and UDim2.new(1,0,0,300) or UDim2.new(1,0,0,45)
+            if f.Size.Y.Offset > 45 then update("") end
         end)
+        search:GetPropertyChangedSignal("Text"):Connect(function() update(search.Text) end)
     end
 
-    function tabObj:AddButton(text, callback)
-        local frame = Instance.new("Frame", Content)
-        frame.Size = UDim2.new(1, 0, 0, 55)
-        frame.BackgroundTransparency = 1
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(1, 0, 1, 0)
-        btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-        btn.Text = text
-        btn.TextColor3 = Color3.new(1, 1, 1)
-        btn.TextWrapped = true
-        Instance.new("UICorner", btn)
-        local s = Instance.new("UIStroke", btn)
-        s.Thickness = 2 table.insert(self.Elements, s)
-        btn.MouseButton1Click:Connect(function() pcall(callback) end)
+    function tabObj:CreateCategory(cN)
+        local lab = Instance.new("TextLabel", content)
+        lab.Size, lab.Text = UDim2.new(1, 0, 0, 20), "• " .. cN:upper()
+        lab.BackgroundTransparency, lab.TextColor3, lab.TextXAlignment = 1, Color3.fromRGB(100, 100, 120), Enum.TextXAlignment.Left
+        lab.Font, lab.TextSize = Enum.Font.SourceSansBold, 13
+        return tabObj
     end
 
-    function tabObj:CreateCategory(catName)
-        local wrapper = Instance.new("Frame", Content)
-        wrapper.Size = UDim2.new(1, 0, 0, 35)
-        wrapper.AutomaticSize = Enum.AutomaticSize.Y
-        wrapper.BackgroundTransparency = 1
-        Instance.new("UIListLayout", wrapper).Padding = UDim.new(0, 5)
-
-        local fold = Instance.new("TextButton", wrapper)
-        fold.Size = UDim2.new(1, 0, 0, 35)
-        fold.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        fold.Text = catName
-        fold.TextColor3 = Color3.new(1, 1, 1)
-        Instance.new("UICorner", fold)
-        local fs = Instance.new("UIStroke", fold)
-        fs.Thickness = 2 table.insert(self.Elements, fs)
-
-        local container = Instance.new("Frame", wrapper)
-        container.Size = UDim2.new(1, 0, 0, 0)
-        container.AutomaticSize = Enum.AutomaticSize.Y
-        container.BackgroundTransparency = 1
-        container.Visible = false
-        Instance.new("UIListLayout", container).Padding = UDim.new(0, 5)
-
-        fold.MouseButton1Click:Connect(function() container.Visible = not container.Visible end)
-
-        local catObj = {}
-        function catObj:AddButton(t, c)
-            local fr = Instance.new("Frame", container)
-            fr.Size = UDim2.new(1, 0, 0, 45)
-            fr.BackgroundTransparency = 1
-            local b = Instance.new("TextButton", fr)
-            b.Size = UDim2.new(1, 0, 1, 0)
-            b.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-            b.Text = t
-            b.TextColor3 = Color3.new(1, 1, 1)
-            b.TextWrapped = true
-            Instance.new("UICorner", b)
-            local s = Instance.new("UIStroke", b)
-            s.Thickness = 1 table.insert(self.Elements, s)
-            b.MouseButton1Click:Connect(c)
-        end
-        function catObj:AddToggle(t, c)
-            local fr = Instance.new("Frame", container)
-            fr.Size = UDim2.new(1, 0, 0, 45)
-            fr.BackgroundTransparency = 1
-            local b = Instance.new("TextButton", fr)
-            b.Size = UDim2.new(1, 0, 1, 0)
-            b.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-            b.Text = t
-            b.TextColor3 = Color3.new(1, 1, 1)
-            b.TextWrapped = true
-            Instance.new("UICorner", b)
-            local s = Instance.new("UIStroke", b)
-            s.Thickness = 1 table.insert(self.Elements, s)
-            b.MouseButton1Click:Connect(function() handleToggleLogic(b, name .. "_" .. catName .. "_" .. t, c) end)
-        end
-        return catObj
-    end
-
-    function tabObj:AddSlider(text, min, max, def, callback)
-        local frame = Instance.new("Frame", Content)
-        frame.Size = UDim2.new(1, 0, 0, 65)
-        frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        Instance.new("UICorner", frame)
-        local s = Instance.new("UIStroke", frame)
-        s.Thickness = 2 table.insert(self.Elements, s)
-
-        local label = Instance.new("TextLabel", frame)
-        label.Size = UDim2.new(1, 0, 0, 30)
-        label.BackgroundTransparency = 1
-        label.Text = text .. ": " .. def
-        label.TextColor3 = Color3.new(1, 1, 1)
-
-        local bar = Instance.new("Frame", frame)
-        bar.Size = UDim2.new(0.9, 0, 0, 6)
-        bar.Position = UDim2.new(0.05, 0, 0.7, 0)
-        bar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        
-        local fill = Instance.new("Frame", bar)
-        fill.Size = UDim2.new((def-min)/(max-min), 0, 1, 0)
-        fill.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
-        
-        local active = false
-        local function update()
-            local p = math.clamp((UIS:GetMouseLocation().X - bar.AbsolutePosition.X) / bar.AbsoluteSize.X, 0, 1)
-            local v = math.floor(min + (max - min) * p)
-            fill.Size, label.Text = UDim2.new(p, 0, 1, 0), text .. ": " .. v
-            pcall(callback, v)
-        end
-        bar.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then active = true end end)
-        UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then active = false end end)
-        UIS.InputChanged:Connect(function(i) if active then update() end end)
-    end
-
-    function tabObj:AddDropdown(text, list, callback)
-        local frame = Instance.new("Frame", Content)
-        frame.Size = UDim2.new(1, 0, 0, 45)
-        frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-        frame.AutomaticSize = Enum.AutomaticSize.Y
-        Instance.new("UICorner", frame)
-        local s = Instance.new("UIStroke", frame)
-        s.Thickness = 2 table.insert(self.Elements, s)
-
-        local btn = Instance.new("TextButton", frame)
-        btn.Size = UDim2.new(1, 0, 0, 45)
-        btn.BackgroundTransparency = 1
-        btn.Text = text .. " ▼"
-        btn.TextColor3 = Color3.new(1, 1, 1)
-
-        local drop = Instance.new("Frame", frame)
-        drop.Size = UDim2.new(1, 0, 0, 0)
-        drop.Position = UDim2.new(0, 0, 0, 45)
-        drop.Visible = false
-        drop.AutomaticSize = Enum.AutomaticSize.Y
-        drop.BackgroundTransparency = 1
-        Instance.new("UIListLayout", drop)
-
-        btn.MouseButton1Click:Connect(function() drop.Visible = not drop.Visible end)
-        for _, val in pairs(list) do
-            local item = Instance.new("TextButton", drop)
-            item.Size = UDim2.new(1, 0, 0, 35)
-            item.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-            item.Text = tostring(val)
-            item.TextColor3 = Color3.new(0.8, 0.8, 0.8)
-            item.MouseButton1Click:Connect(function() btn.Text, drop.Visible = text .. ": " .. val, false pcall(callback, val) end)
-        end
+    function tabObj:AddButton(text, desc, callback)
+        local f = Instance.new("Frame", content)
+        f.Size, f.BackgroundColor3 = UDim2.new(1, 0, 0, 50), Color3.fromRGB(25, 25, 35)
+        Instance.new("UICorner", f)
+        local b = Instance.new("TextButton", f)
+        b.Size, b.BackgroundTransparency, b.Text, b.TextColor3 = UDim2.new(1,0,1,0), 1, "      " .. text, Color3.new(1,1,1)
+        b.TextXAlignment, b.Font = Enum.TextXAlignment.Left, Enum.Font.SourceSansBold
+        b.MouseButton1Click:Connect(function() pcall(callback) end)
     end
 
     return tabObj
