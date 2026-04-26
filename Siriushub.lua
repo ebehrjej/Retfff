@@ -64,12 +64,7 @@ function FexawLib:Init()
             dragStart = input.Position
             startPos = ob.Position
             mainStartPos = main.Position
-            
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
+            input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
         end
     end)
 
@@ -119,10 +114,22 @@ function FexawLib:CreateTab(name)
 
     local tab = {}
     function tab:CreateCategory(n)
+        -- Кнопка для сворачивания
+        local foldBtn = Instance.new("TextButton", cn)
+        foldBtn.Size, foldBtn.BackgroundColor3 = UDim2.new(1, -10, 0, 30), Color3.fromRGB(35, 35, 35)
+        foldBtn.Text, foldBtn.TextColor3 = "v " .. n .. " v", Color3.new(1, 1, 1)
+        Instance.new("UICorner", foldBtn)
+
         local f = Instance.new("Frame", cn)
         f.Size, f.AutomaticSize, f.BackgroundTransparency = UDim2.new(1, -10, 0, 0), Enum.AutomaticSize.Y, 1
+        f.Visible = false -- Изначально свернуто
         Instance.new("UIListLayout", f).Padding = UDim.new(0, 5)
         
+        foldBtn.MouseButton1Click:Connect(function()
+            f.Visible = not f.Visible
+            foldBtn.Text = (f.Visible and "^ " or "v ") .. n .. (f.Visible and " ^" or " v")
+        end)
+
         local cat = {}
         function cat:AddToggle(txt, cb)
             local b = Instance.new("TextButton", f)
@@ -136,9 +143,6 @@ function FexawLib:CreateTab(name)
                 game:GetService("TweenService"):Create(b, TweenInfo.new(0.3), {BackgroundColor3 = a and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(40, 40, 40)}):Play()
                 task.spawn(function() while a do pcall(cb) task.wait(0.3) end end)
             end)
-
-            b.MouseEnter:Connect(function() game:GetService("TweenService"):Create(b, TweenInfo.new(0.2), {Size = UDim2.new(1, 5, 0, 30)}):Play() end)
-            b.MouseLeave:Connect(function() game:GetService("TweenService"):Create(b, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 30)}):Play() end)
         end
         return cat
     end
