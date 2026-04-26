@@ -1,5 +1,4 @@
 FexawLib = {}
-
 function FexawLib:Init()
     local UIS = game:GetService("UserInputService")
     local TS = game:GetService("TweenService")
@@ -7,7 +6,6 @@ function FexawLib:Init()
     local sg = Instance.new("ScreenGui", p.PlayerGui)
     sg.Name = "FexawV3"
     sg.ResetOnSpawn = false
-
     local targetHeight, targetWidth = 380, 520
     main = Instance.new("Frame", sg)
     main.Size, main.Position = UDim2.new(0, 0, 0, 0), UDim2.new(0.5, 0, 0.5, 0)
@@ -16,7 +14,6 @@ function FexawLib:Init()
     Instance.new("UICorner", main)
     local ms = Instance.new("UIStroke", main)
     ms.Thickness, ms.ApplyStrokeMode = 3, Enum.ApplyStrokeMode.Border
-
     side = Instance.new("Frame", main)
     side.Size, side.BackgroundColor3 = UDim2.new(0, 150, 1, 0), Color3.fromRGB(20, 20, 20)
     Instance.new("UICorner", side)
@@ -24,14 +21,12 @@ function FexawLib:Init()
     sl.Padding, sl.HorizontalAlignment = UDim.new(0, 5), Enum.HorizontalAlignment.Center
     local ss = Instance.new("UIStroke", side)
     ss.Thickness, ss.ApplyStrokeMode = 2, Enum.ApplyStrokeMode.Border
-
     local ob = Instance.new("Frame", sg)
     ob.Size, ob.Position = UDim2.new(0, 350, 0, 40), UDim2.new(0.5, -175, 0.2, 0)
     ob.BackgroundColor3, ob.BackgroundTransparency = Color3.fromRGB(15, 15, 15), 0.2
     Instance.new("UICorner", ob)
     local os = Instance.new("UIStroke", ob)
     os.Thickness = 2
-
     task.spawn(function()
         local h = 0
         while true do
@@ -40,16 +35,13 @@ function FexawLib:Init()
             h = h + 0.005 task.wait(0.01)
         end
     end)
-
     local db = Instance.new("TextButton", ob)
     db.Size, db.BackgroundTransparency, db.Text = UDim2.new(0, 60, 1, 0), 1, "÷  |"
     db.TextColor3, db.TextSize = Color3.new(1, 1, 1), 22
-
     local obn = Instance.new("TextButton", ob)
     obn.Size, obn.Position = UDim2.new(1, -65, 1, 0), UDim2.new(0, 65, 0, 0)
     obn.BackgroundTransparency, obn.Text = 1, "FEXAW | MENU"
     obn.TextColor3, obn.TextXAlignment = Color3.new(1, 1, 1), Enum.TextXAlignment.Left
-
     local dragging, dragStart, startPos, mainStartPos
     local function update(input)
         local delta = input.Position - dragStart
@@ -84,14 +76,12 @@ function FexawLib:CreateTab(name)
     tb.Size, tb.BackgroundColor3 = UDim2.new(0.9, 0, 0, 32), Color3.fromRGB(30, 30, 30)
     tb.Text, tb.TextColor3 = name, Color3.new(0.7, 0.7, 0.7)
     Instance.new("UICorner", tb)
-
     local cn = Instance.new("ScrollingFrame", main)
     cn.Position, cn.Size = UDim2.new(0, 160, 0, 10), UDim2.new(1, -170, 1, -20)
     cn.BackgroundTransparency, cn.Visible = 1, false
     cn.ScrollBarThickness, cn.AutomaticCanvasSize = 2, Enum.AutomaticSize.Y
     local cl = Instance.new("UIListLayout", cn)
     cl.Padding, cl.SortOrder = UDim.new(0, 5), Enum.SortOrder.LayoutOrder
-
     table.insert(allTabs, {Btn = tb, Cont = cn})
     tb.MouseButton1Click:Connect(function()
         for _, t in pairs(allTabs) do 
@@ -101,29 +91,47 @@ function FexawLib:CreateTab(name)
         cn.Visible = true
         game:GetService("TweenService"):Create(tb, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50), TextColor3 = Color3.new(1, 1, 1)}):Play()
     end)
-
     local tab = {}
+
+    -- ДОБАВЛЕННЫЙ TEXTBOX (Не появится, пока не вызовешь)
+    function tab:AddTextBox(txt, cb)
+        local f = Instance.new("Frame", cn)
+        f.Size, f.BackgroundColor3 = UDim2.new(1, -10, 0, 35), Color3.fromRGB(35, 35, 35)
+        Instance.new("UICorner", f)
+        
+        local l = Instance.new("TextLabel", f)
+        l.Size, l.Position = UDim2.new(0.4, 0, 1, 0), UDim2.new(0, 5, 0, 0)
+        l.BackgroundTransparency, l.Text, l.TextColor3 = 1, txt, Color3.new(1,1,1)
+        l.TextXAlignment = Enum.TextXAlignment.Left
+
+        local box = Instance.new("TextBox", f)
+        box.Size, box.Position = UDim2.new(0.5, 0, 0.8, 0), UDim2.new(0.45, 0, 0.1, 0)
+        box.BackgroundColor3, box.Text, box.TextColor3 = Color3.fromRGB(25, 25, 25), "", Color3.new(1,1,1)
+        box.PlaceholderText = "Type here..."
+        Instance.new("UICorner", box)
+
+        box.FocusLost:Connect(function(enter)
+            if enter then pcall(cb, box.Text) end
+        end)
+    end
+
     function tab:CreateCategory(n)
         local cf = Instance.new("Frame", cn)
         cf.Size, cf.AutomaticSize, cf.BackgroundTransparency = UDim2.new(1, -10, 0, 32), Enum.AutomaticSize.Y, 1
         local cl = Instance.new("UIListLayout", cf)
-        cl.Padding = UDim.new(0, 5)
-
+        cl.Padding, cl.SortOrder = UDim.new(0, 5), Enum.SortOrder.LayoutOrder
         local fb = Instance.new("TextButton", cf)
-        fb.Size, fb.BackgroundColor3 = UDim2.new(1, 0, 0, 30), Color3.fromRGB(35, 35, 35)
+        fb.Size, fb.BackgroundColor3, fb.LayoutOrder = UDim2.new(1, 0, 0, 30), Color3.fromRGB(35, 35, 35), -1
         fb.Text, fb.TextColor3 = "v " .. n .. " v", Color3.new(1, 1, 1)
         Instance.new("UICorner", fb)
-
         local f = Instance.new("Frame", cf)
-        f.Size, f.AutomaticSize, f.BackgroundTransparency = UDim2.new(1, 0, 0, 0), Enum.AutomaticSize.Y, 1
+        f.Size, f.AutomaticSize, f.BackgroundTransparency, f.LayoutOrder = UDim2.new(1, 0, 0, 0), Enum.AutomaticSize.Y, 1, 1
         f.Visible = false
         Instance.new("UIListLayout", f).Padding = UDim.new(0, 5)
-
         fb.MouseButton1Click:Connect(function()
             f.Visible = not f.Visible
             fb.Text = (f.Visible and "^ " or "v ") .. n .. (f.Visible and " ^" or " v")
         end)
-
         local cat = {}
         function cat:AddToggle(txt, cb)
             local b = Instance.new("TextButton", f)
@@ -141,5 +149,4 @@ function FexawLib:CreateTab(name)
     end
     return tab
 end
-
 return FexawLib
