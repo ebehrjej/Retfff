@@ -51,29 +51,20 @@ function FexawLib:Init()
     obn.TextColor3, obn.TextXAlignment = Color3.new(1, 1, 1), Enum.TextXAlignment.Left
 
     local dragging, dragStart, startPos, mainStartPos
-
     local function update(input)
         local delta = input.Position - dragStart
         ob.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         main.Position = UDim2.new(mainStartPos.X.Scale, mainStartPos.X.Offset + delta.X, mainStartPos.Y.Scale, mainStartPos.Y.Offset + delta.Y)
     end
-
     db.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = ob.Position
-            mainStartPos = main.Position
+            dragging, dragStart, startPos, mainStartPos = true, input.Position, ob.Position, main.Position
             input.Changed:Connect(function() if input.UserInputState == Enum.UserInputState.End then dragging = false end end)
         end
     end)
-
     UIS.InputChanged:Connect(function(input)
-        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            update(input)
-        end
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then update(input) end
     end)
-
     obn.MouseButton1Click:Connect(function()
         if not main.Visible then
             main.Visible = true
@@ -84,7 +75,6 @@ function FexawLib:Init()
             tw.Completed:Connect(function() if main.Size.Y.Offset < 10 then main.Visible = false end end)
         end
     end)
-
     allTabs = {}
     return self
 end
@@ -99,10 +89,10 @@ function FexawLib:CreateTab(name)
     cn.Position, cn.Size = UDim2.new(0, 160, 0, 10), UDim2.new(1, -170, 1, -20)
     cn.BackgroundTransparency, cn.Visible = 1, false
     cn.ScrollBarThickness, cn.AutomaticCanvasSize = 2, Enum.AutomaticSize.Y
-    Instance.new("UIListLayout", cn).Padding = UDim.new(0, 5)
-    
-    table.insert(allTabs, {Btn = tb, Cont = cn})
+    local cl = Instance.new("UIListLayout", cn)
+    cl.Padding, cl.SortOrder = UDim.new(0, 5), Enum.SortOrder.LayoutOrder
 
+    table.insert(allTabs, {Btn = tb, Cont = cn})
     tb.MouseButton1Click:Connect(function()
         for _, t in pairs(allTabs) do 
             t.Cont.Visible = false 
@@ -114,20 +104,24 @@ function FexawLib:CreateTab(name)
 
     local tab = {}
     function tab:CreateCategory(n)
-        -- Кнопка для сворачивания
-        local foldBtn = Instance.new("TextButton", cn)
-        foldBtn.Size, foldBtn.BackgroundColor3 = UDim2.new(1, -10, 0, 30), Color3.fromRGB(35, 35, 35)
-        foldBtn.Text, foldBtn.TextColor3 = "v " .. n .. " v", Color3.new(1, 1, 1)
-        Instance.new("UICorner", foldBtn)
+        local cf = Instance.new("Frame", cn)
+        cf.Size, cf.AutomaticSize, cf.BackgroundTransparency = UDim2.new(1, -10, 0, 32), Enum.AutomaticSize.Y, 1
+        local cl = Instance.new("UIListLayout", cf)
+        cl.Padding = UDim.new(0, 5)
 
-        local f = Instance.new("Frame", cn)
-        f.Size, f.AutomaticSize, f.BackgroundTransparency = UDim2.new(1, -10, 0, 0), Enum.AutomaticSize.Y, 1
-        f.Visible = false -- Изначально свернуто
+        local fb = Instance.new("TextButton", cf)
+        fb.Size, fb.BackgroundColor3 = UDim2.new(1, 0, 0, 30), Color3.fromRGB(35, 35, 35)
+        fb.Text, fb.TextColor3 = "v " .. n .. " v", Color3.new(1, 1, 1)
+        Instance.new("UICorner", fb)
+
+        local f = Instance.new("Frame", cf)
+        f.Size, f.AutomaticSize, f.BackgroundTransparency = UDim2.new(1, 0, 0, 0), Enum.AutomaticSize.Y, 1
+        f.Visible = false
         Instance.new("UIListLayout", f).Padding = UDim.new(0, 5)
-        
-        foldBtn.MouseButton1Click:Connect(function()
+
+        fb.MouseButton1Click:Connect(function()
             f.Visible = not f.Visible
-            foldBtn.Text = (f.Visible and "^ " or "v ") .. n .. (f.Visible and " ^" or " v")
+            fb.Text = (f.Visible and "^ " or "v ") .. n .. (f.Visible and " ^" or " v")
         end)
 
         local cat = {}
@@ -136,7 +130,6 @@ function FexawLib:CreateTab(name)
             b.Size, b.Text = UDim2.new(1, 0, 0, 30), txt
             b.BackgroundColor3, b.TextColor3 = Color3.fromRGB(40, 40, 40), Color3.new(1, 1, 1)
             Instance.new("UICorner", b)
-            
             local a = false
             b.MouseButton1Click:Connect(function()
                 a = not a
