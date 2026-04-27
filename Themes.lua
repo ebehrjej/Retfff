@@ -1,78 +1,78 @@
 _G.FexawThemes = {
     ["Neon"] = {
-        MainColor = Color3.fromRGB(40, 0, 40),
-        SideColor = Color3.fromRGB(20, 0, 20),
-        TopColor = Color3.fromRGB(60, 0, 60)
+        MainColor = Color3.fromRGB(25, 0, 35),
+        SideColor = Color3.fromRGB(15, 0, 25),
+        TopColor = Color3.fromRGB(80, 0, 120)
     },
     ["Toxic"] = {
-        MainColor = Color3.fromRGB(0, 40, 0),
-        SideColor = Color3.fromRGB(0, 20, 0),
-        TopColor = Color3.fromRGB(0, 60, 0)
+        MainColor = Color3.fromRGB(10, 35, 10),
+        SideColor = Color3.fromRGB(5, 20, 5),
+        TopColor = Color3.fromRGB(120, 255, 0)
     },
     ["Fire"] = {
-        MainColor = Color3.fromRGB(40, 10, 0),
+        MainColor = Color3.fromRGB(35, 10, 5),
         SideColor = Color3.fromRGB(20, 5, 0),
-        TopColor = Color3.fromRGB(60, 15, 0)
+        TopColor = Color3.fromRGB(255, 80, 0)
     },
     ["Blue"] = {
-        MainColor = Color3.fromRGB(0, 20, 50),
-        SideColor = Color3.fromRGB(0, 10, 30),
-        TopColor = Color3.fromRGB(0, 30, 70)
+        MainColor = Color3.fromRGB(10, 25, 50),
+        SideColor = Color3.fromRGB(5, 15, 30),
+        TopColor = Color3.fromRGB(0, 170, 255)
     },
     ["Red"] = {
-        MainColor = Color3.fromRGB(50, 0, 0),
-        SideColor = Color3.fromRGB(30, 0, 0),
-        TopColor = Color3.fromRGB(70, 0, 0)
+        MainColor = Color3.fromRGB(40, 5, 5),
+        SideColor = Color3.fromRGB(25, 0, 0),
+        TopColor = Color3.fromRGB(255, 50, 50)
     },
     ["Water"] = {
-        MainColor = Color3.fromRGB(0, 30, 60),
-        SideColor = Color3.fromRGB(0, 15, 30),
-        TopColor = Color3.fromRGB(0, 45, 90)
+        MainColor = Color3.fromRGB(10, 30, 45),
+        SideColor = Color3.fromRGB(5, 15, 25),
+        TopColor = Color3.fromRGB(0, 200, 255)
     },
     ["Black"] = {
-        MainColor = Color3.fromRGB(5, 5, 5),
-        SideColor = Color3.fromRGB(0, 0, 0),
-        TopColor = Color3.fromRGB(15, 15, 15)
+        MainColor = Color3.fromRGB(10, 10, 10),
+        SideColor = Color3.fromRGB(5, 5, 5),
+        TopColor = Color3.fromRGB(25, 25, 25)
     },
     ["Gray"] = {
-        MainColor = Color3.fromRGB(40, 40, 40),
+        MainColor = Color3.fromRGB(45, 45, 45),
         SideColor = Color3.fromRGB(30, 30, 30),
-        TopColor = Color3.fromRGB(50, 50, 50)
+        TopColor = Color3.fromRGB(80, 80, 80)
     },
     ["Vampire"] = {
-        MainColor = Color3.fromRGB(20, 0, 0),
-        SideColor = Color3.fromRGB(10, 0, 0),
-        TopColor = Color3.fromRGB(30, 0, 0)
+        MainColor = Color3.fromRGB(25, 0, 10),
+        SideColor = Color3.fromRGB(15, 0, 5),
+        TopColor = Color3.fromRGB(150, 0, 0)
     },
     ["Forest"] = {
-        MainColor = Color3.fromRGB(10, 30, 10),
-        SideColor = Color3.fromRGB(5, 15, 5),
-        TopColor = Color3.fromRGB(15, 45, 15)
+        MainColor = Color3.fromRGB(15, 35, 15),
+        SideColor = Color3.fromRGB(10, 20, 10),
+        TopColor = Color3.fromRGB(0, 120, 60)
     },
     ["Gold"] = {
-        MainColor = Color3.fromRGB(50, 40, 0),
-        SideColor = Color3.fromRGB(30, 25, 0),
-        TopColor = Color3.fromRGB(70, 60, 0)
+        MainColor = Color3.fromRGB(45, 35, 10),
+        SideColor = Color3.fromRGB(30, 25, 5),
+        TopColor = Color3.fromRGB(255, 200, 0)
     },
     ["Midnight"] = {
-        MainColor = Color3.fromRGB(5, 5, 30),
-        SideColor = Color3.fromRGB(2, 2, 15),
-        TopColor = Color3.fromRGB(10, 10, 50)
+        MainColor = Color3.fromRGB(10, 10, 35),
+        SideColor = Color3.fromRGB(5, 5, 20),
+        TopColor = Color3.fromRGB(80, 80, 200)
     },
     ["Ghost"] = {
-        MainColor = Color3.fromRGB(35, 35, 45),
-        SideColor = Color3.fromRGB(25, 25, 30),
-        TopColor = Color3.fromRGB(45, 45, 60)
+        MainColor = Color3.fromRGB(40, 40, 50),
+        SideColor = Color3.fromRGB(25, 25, 35),
+        TopColor = Color3.fromRGB(120, 120, 160)
     },
     ["Light"] = {
-        MainColor = Color3.fromRGB(240, 240, 240),
-        SideColor = Color3.fromRGB(220, 220, 220),
+        MainColor = Color3.fromRGB(235, 235, 235),
+        SideColor = Color3.fromRGB(210, 210, 210),
         TopColor = Color3.fromRGB(255, 255, 255)
     },
     ["Shadow"] = {
-        MainColor = Color3.fromRGB(10, 10, 12),
-        SideColor = Color3.fromRGB(5, 5, 7),
-        TopColor = Color3.fromRGB(20, 20, 25)
+        MainColor = Color3.fromRGB(15, 15, 20),
+        SideColor = Color3.fromRGB(8, 8, 12),
+        TopColor = Color3.fromRGB(50, 50, 70)
     }
 }
 
