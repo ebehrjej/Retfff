@@ -1,7 +1,6 @@
 local Library = {}
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -9,14 +8,12 @@ _G.CurrentTheme = {
     MainColor = Color3.fromRGB(15, 15, 15),
     SideColor = Color3.fromRGB(25, 25, 25),
     TopColor = Color3.fromRGB(20, 20, 20),
-    TextColor = Color3.fromRGB(255, 255, 255),
-    StrokeColor = Color3.fromRGB(255, 255, 255),
-    Rainbow = true
+    TextColor = Color3.fromRGB(255, 255, 255)
 }
 
 function Library:Init()
     local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "Fexaw_Official_Library"
+    ScreenGui.Name = "Fexaw_Official_Final"
     ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
     ScreenGui.ResetOnSpawn = false
 
@@ -27,12 +24,9 @@ function Library:Init()
     MainFrame.Position = UDim2.new(0.5, -260, 0.5, -190)
     MainFrame.BackgroundColor3 = _G.CurrentTheme.MainColor
     MainFrame.Visible = false
+    MainFrame.BorderSizePixel = 0
     MainFrame.ClipsDescendants = true
     Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
-
-    local MainStroke = Instance.new("UIStroke", MainFrame)
-    MainStroke.Thickness = 3
-    MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
     local SidePanel = Instance.new("ScrollingFrame")
     SidePanel.Name = "SidePanel"
@@ -40,6 +34,7 @@ function Library:Init()
     SidePanel.Size = UDim2.new(0, 150, 1, -10)
     SidePanel.Position = UDim2.new(0, 5, 0, 5)
     SidePanel.BackgroundColor3 = _G.CurrentTheme.SideColor
+    SidePanel.BorderSizePixel = 0
     SidePanel.ScrollBarThickness = 0
     SidePanel.CanvasSize = UDim2.new(0, 0, 0, 0)
     SidePanel.AutomaticCanvasSize = Enum.AutomaticSize.Y
@@ -55,12 +50,9 @@ function Library:Init()
     TopBar.Size = UDim2.new(0, 350, 0, 40)
     TopBar.Position = UDim2.new(0.5, -175, 0.1, 0)
     TopBar.BackgroundColor3 = _G.CurrentTheme.TopColor
-    TopBar.BackgroundTransparency = 0.2
+    TopBar.BorderSizePixel = 0
     Instance.new("UICorner", TopBar).CornerRadius = UDim.new(0, 8)
     
-    local TopStroke = Instance.new("UIStroke", TopBar)
-    TopStroke.Thickness = 2
-
     local ContainerHolder = Instance.new("Frame")
     ContainerHolder.Name = "ContainerHolder"
     ContainerHolder.Parent = MainFrame
@@ -72,25 +64,7 @@ function Library:Init()
         MainFrame.BackgroundColor3 = _G.CurrentTheme.MainColor
         SidePanel.BackgroundColor3 = _G.CurrentTheme.SideColor
         TopBar.BackgroundColor3 = _G.CurrentTheme.TopColor
-        if not _G.CurrentTheme.Rainbow then
-            MainStroke.Color = _G.CurrentTheme.StrokeColor
-            TopStroke.Color = _G.CurrentTheme.StrokeColor
-        end
     end
-
-    task.spawn(function()
-        local Hue = 0
-        while true do
-            if _G.CurrentTheme.Rainbow then
-                local RainbowColor = Color3.fromHSV(Hue, 1, 1)
-                MainStroke.Color = RainbowColor
-                TopStroke.Color = RainbowColor
-                Hue = Hue + 0.005
-                if Hue > 1 then Hue = 0 end
-            end
-            task.wait(0.01)
-        end
-    end)
 
     local DragButton = Instance.new("TextButton")
     DragButton.Name = "DragButton"
@@ -108,7 +82,7 @@ function Library:Init()
     OpenButton.Size = UDim2.new(1, -50, 1, 0)
     OpenButton.Position = UDim2.new(0, 45, 0, 0)
     OpenButton.BackgroundTransparency = 1
-    OpenButton.Text = "FEXAW HUB | V3 FINAL"
+    OpenButton.Text = "FEXAW HUB | OFFICIAL"
     OpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     OpenButton.TextSize = 18
     OpenButton.Font = Enum.Font.SourceSansBold
@@ -169,7 +143,6 @@ function Library:Init()
     ConfirmFrame.Visible = false
     ConfirmFrame.ZIndex = 100
     Instance.new("UICorner", ConfirmFrame)
-    Instance.new("UIStroke", ConfirmFrame).Color = Color3.fromRGB(255, 255, 255)
 
     local ConfirmLabel = Instance.new("TextLabel")
     ConfirmLabel.Parent = ConfirmFrame
