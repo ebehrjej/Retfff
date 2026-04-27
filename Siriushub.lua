@@ -1,6 +1,7 @@
 local Library = {}
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -8,14 +9,16 @@ _G.CurrentTheme = {
     MainColor = Color3.fromRGB(15, 15, 15),
     SideColor = Color3.fromRGB(25, 25, 25),
     TopColor = Color3.fromRGB(20, 20, 20),
-    TextColor = Color3.fromRGB(255, 255, 255)
+    TextColor = Color3.fromRGB(255, 255, 255),
+    AccentColor = Color3.fromRGB(0, 180, 80)
 }
 
 function Library:Init()
     local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "Fexaw_Official_Final"
+    ScreenGui.Name = "Fexaw_Ultimate_Library_V3"
     ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
     ScreenGui.ResetOnSpawn = false
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
     local MainFrame = Instance.new("Frame")
     MainFrame.Name = "MainFrame"
@@ -60,6 +63,60 @@ function Library:Init()
     ContainerHolder.Position = UDim2.new(0, 160, 0, 45)
     ContainerHolder.BackgroundTransparency = 1
 
+    local ConfirmOverlay = Instance.new("Frame")
+    ConfirmOverlay.Name = "ConfirmOverlay"
+    ConfirmOverlay.Parent = ScreenGui
+    ConfirmOverlay.Size = UDim2.new(1, 0, 1, 0)
+    ConfirmOverlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    ConfirmOverlay.BackgroundTransparency = 1
+    ConfirmOverlay.Visible = false
+    ConfirmOverlay.ZIndex = 1000
+
+    local ConfirmFrame = Instance.new("Frame")
+    ConfirmFrame.Name = "ConfirmFrame"
+    ConfirmFrame.Parent = ConfirmOverlay
+    ConfirmFrame.Size = UDim2.new(0, 280, 0, 140)
+    ConfirmFrame.Position = UDim2.new(0.5, -140, 0.5, -70)
+    ConfirmFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    ConfirmFrame.BorderSizePixel = 0
+    Instance.new("UICorner", ConfirmFrame)
+    
+    local ConfirmStroke = Instance.new("UIStroke", ConfirmFrame)
+    ConfirmStroke.Thickness = 2
+    ConfirmStroke.Color = Color3.fromRGB(255, 255, 255)
+
+    local ConfirmLabel = Instance.new("TextLabel")
+    ConfirmLabel.Parent = ConfirmFrame
+    ConfirmLabel.Size = UDim2.new(1, 0, 0, 70)
+    ConfirmLabel.BackgroundTransparency = 1
+    ConfirmLabel.Text = "Are you sure you want to close the menu?"
+    ConfirmLabel.TextColor3 = Color3.new(1, 1, 1)
+    ConfirmLabel.Font = Enum.Font.SourceSansBold
+    ConfirmLabel.TextSize = 16
+    ConfirmLabel.TextWrapped = true
+
+    local YesButton = Instance.new("TextButton")
+    YesButton.Name = "YesButton"
+    YesButton.Parent = ConfirmFrame
+    YesButton.Size = UDim2.new(0.4, 0, 0, 35)
+    YesButton.Position = UDim2.new(0.05, 0, 0.65, 0)
+    YesButton.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+    YesButton.Text = "Yes"
+    YesButton.TextColor3 = Color3.new(1, 1, 1)
+    YesButton.Font = Enum.Font.SourceSansBold
+    Instance.new("UICorner", YesButton)
+
+    local NoButton = Instance.new("TextButton")
+    NoButton.Name = "NoButton"
+    NoButton.Parent = ConfirmFrame
+    NoButton.Size = UDim2.new(0.4, 0, 0, 35)
+    NoButton.Position = UDim2.new(0.55, 0, 0.65, 0)
+    NoButton.Text = "No"
+    NoButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+    NoButton.TextColor3 = Color3.new(1, 1, 1)
+    NoButton.Font = Enum.Font.SourceSansBold
+    Instance.new("UICorner", NoButton)
+
     _G.UpdateMenuVisuals = function()
         MainFrame.BackgroundColor3 = _G.CurrentTheme.MainColor
         SidePanel.BackgroundColor3 = _G.CurrentTheme.SideColor
@@ -82,9 +139,9 @@ function Library:Init()
     OpenButton.Size = UDim2.new(1, -50, 1, 0)
     OpenButton.Position = UDim2.new(0, 45, 0, 0)
     OpenButton.BackgroundTransparency = 1
-    OpenButton.Text = "FEXAW HUB | OFFICIAL"
+    OpenButton.Text = "FEXAW HUB | ALL SYSTEMS ONLINE"
     OpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    OpenButton.TextSize = 18
+    OpenButton.TextSize = 16
     OpenButton.Font = Enum.Font.SourceSansBold
     OpenButton.TextXAlignment = Enum.TextXAlignment.Left
 
@@ -134,45 +191,20 @@ function Library:Init()
     CloseButton.Font = Enum.Font.SourceSansBold
     Instance.new("UICorner", CloseButton)
 
-    local ConfirmFrame = Instance.new("Frame")
-    ConfirmFrame.Name = "ConfirmFrame"
-    ConfirmFrame.Parent = ScreenGui
-    ConfirmFrame.Size = UDim2.new(0, 250, 0, 100)
-    ConfirmFrame.Position = UDim2.new(0.5, -125, 0.5, -50)
-    ConfirmFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    ConfirmFrame.Visible = false
-    ConfirmFrame.ZIndex = 100
-    Instance.new("UICorner", ConfirmFrame)
+    CloseButton.MouseButton1Click:Connect(function()
+        ConfirmOverlay.Visible = true
+        TweenService:Create(ConfirmOverlay, TweenInfo.new(0.3), {BackgroundTransparency = 0.5}):Play()
+    end)
 
-    local ConfirmLabel = Instance.new("TextLabel")
-    ConfirmLabel.Parent = ConfirmFrame
-    ConfirmLabel.Size = UDim2.new(1, 0, 0, 50)
-    ConfirmLabel.BackgroundTransparency = 1
-    ConfirmLabel.Text = "Are you sure you want to close?"
-    ConfirmLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ConfirmLabel.Font = Enum.Font.SourceSans
+    NoButton.MouseButton1Click:Connect(function()
+        TweenService:Create(ConfirmOverlay, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+        task.wait(0.2)
+        ConfirmOverlay.Visible = false
+    end)
 
-    local YesButton = Instance.new("TextButton")
-    YesButton.Parent = ConfirmFrame
-    YesButton.Size = UDim2.new(0.4, 0, 0, 30)
-    YesButton.Position = UDim2.new(0.05, 0, 0.6, 0)
-    YesButton.Text = "Yes"
-    YesButton.BackgroundColor3 = Color3.fromRGB(0, 120, 0)
-    YesButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Instance.new("UICorner", YesButton)
-
-    local NoButton = Instance.new("TextButton")
-    NoButton.Parent = ConfirmFrame
-    NoButton.Size = UDim2.new(0.4, 0, 0, 30)
-    NoButton.Position = UDim2.new(0.55, 0, 0.6, 0)
-    NoButton.Text = "No"
-    NoButton.BackgroundColor3 = Color3.fromRGB(120, 0, 0)
-    NoButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Instance.new("UICorner", NoButton)
-
-    CloseButton.MouseButton1Click:Connect(function() ConfirmFrame.Visible = true end)
-    NoButton.MouseButton1Click:Connect(function() ConfirmFrame.Visible = false end)
-    YesButton.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+    YesButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
+    end)
 
     function Library:CreateTab(TabName)
         local TabButton = Instance.new("TextButton")
@@ -194,8 +226,14 @@ function Library:Init()
         Instance.new("UIListLayout", TabContent).Padding = UDim.new(0, 5)
 
         TabButton.MouseButton1Click:Connect(function()
-            for _, v in pairs(ContainerHolder:GetChildren()) do v.Visible = false end
+            for _, v in pairs(ContainerHolder:GetChildren()) do
+                if v:IsA("ScrollingFrame") then v.Visible = false end
+            end
+            for _, v in pairs(SidePanel:GetChildren()) do
+                if v:IsA("TextButton") then v.BackgroundColor3 = Color3.fromRGB(40, 40, 40) end
+            end
             TabContent.Visible = true
+            TabButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
         end)
 
         local TabObject = {}
@@ -238,13 +276,16 @@ function Library:Init()
                 ToggleButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
                 ToggleButton.Text = ToggleText
                 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+                ToggleButton.Font = Enum.Font.SourceSans
                 Instance.new("UICorner", ToggleButton)
+                
                 ToggleButton.MouseButton1Click:Connect(function()
                     IsActive = not IsActive
-                    ToggleButton.BackgroundColor3 = IsActive and Color3.fromRGB(0, 180, 80) or Color3.fromRGB(45, 45, 45)
+                    ToggleButton.BackgroundColor3 = IsActive and _G.CurrentTheme.AccentColor or Color3.fromRGB(45, 45, 45)
                     Callback(IsActive)
                 end)
             end
+
             function CategoryObject:AddButton(ButtonText, Callback)
                 local Button = Instance.new("TextButton")
                 Button.Parent = ItemsFrame
@@ -252,9 +293,11 @@ function Library:Init()
                 Button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
                 Button.Text = ButtonText
                 Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+                Button.Font = Enum.Font.SourceSans
                 Instance.new("UICorner", Button)
                 Button.MouseButton1Click:Connect(Callback)
             end
+
             return CategoryObject
         end
         return TabObject
